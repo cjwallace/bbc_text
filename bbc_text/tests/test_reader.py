@@ -1,9 +1,10 @@
 import pytest
 import os
-import bbc_text.reader as sut
 
-from pyspark.sql import SparkSession, DataFrame
+from pyspark.sql import DataFrame
 from pyspark.rdd import RDD
+
+import bbc_text.reader as reader
 
 
 ROOT_DIR = os.getcwd()
@@ -11,7 +12,7 @@ ROOT_DIR = os.getcwd()
 
 @pytest.fixture
 def articles_rdd(spark_context):
-    rdd = sut.read_articles(
+    rdd = reader.read_articles(
         spark_context,
         "file:///{}/bbc_text/tests/data".format(ROOT_DIR),
         "cats"
@@ -21,7 +22,7 @@ def articles_rdd(spark_context):
 
 @pytest.fixture
 def single_category_df(spark, articles_rdd):
-    df = sut.create_single_category_df(
+    df = reader.create_single_category_df(
         spark,
         articles_rdd,
         'cats'
@@ -31,7 +32,7 @@ def single_category_df(spark, articles_rdd):
 
 @pytest.fixture
 def articles_df(spark, articles_rdd):
-    df = sut.create_articles_df(
+    df = reader.create_articles_df(
         spark,
         "file:///{}/bbc_text/tests/data".format(ROOT_DIR),
         ['cats', 'dogs']
